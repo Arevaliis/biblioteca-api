@@ -41,6 +41,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         oldUsuario.setNombre(usuario.getNombre());
         oldUsuario.setEmail(usuario.getEmail());
+        usuario.getPerfil().setId(id);
+
+        oldUsuario.setPerfil(usuario.getPerfil());
+        
 
         return usuarioRepository.save(oldUsuario);
     }
