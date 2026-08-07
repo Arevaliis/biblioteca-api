@@ -37,5 +37,30 @@ public class LibroServiceImpl implements LibroService {
 
         return libroRepository.save(libro);
 
+    }
+
+    @Override
+    public Libro findById(Long id) {
+        return libroRepository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public List<Libro> findAll() {
+        return libroRepository.findAll();
+    }
+
+    @Override
+    public Libro update(Long id, Libro libro) {
+        Libro libroNuevo = libroRepository.findById(id).orElseThrow();
+
+        libro.setAutor(libro.getAutor());
+        libroNuevo.setTitulo(libro.getTitulo());
+
+        return libroRepository.save(libro);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        libroRepository.deleteById(id);
     }    
 }
