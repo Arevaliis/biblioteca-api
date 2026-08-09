@@ -4,7 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioCreateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioResponseDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.entities.Usuario;
+import com.biblioteca.api.springboot_biblioteca_api.mappers.UsuarioMapper;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.UsuarioRepository;
 import com.biblioteca.api.springboot_biblioteca_api.services.UsuarioService;
 
@@ -13,40 +18,42 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
+    private final UsuarioMapper usuarioMapper;
+
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper) {
         this.usuarioRepository = usuarioRepository;
+        this.usuarioMapper = usuarioMapper;
     }
 
     @Override
-    public Usuario save(Usuario usuario) {
-        return usuarioRepository.save(usuario);
+    public UsuarioResponseDTO save(UsuarioCreateDTO dto) {
+        Usuario usuarioCreado = usuarioRepository.save(usuarioMapper.toEntity(dto));
+        return usuarioMapper.toDTO(usuarioCreado);
     }
 
     @Override
-    public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
+    public List<UsuarioResponseDTO> findAll() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        return usuarios.stream().map(usuarioMapper::toDTO).toList();
     }
 
     @Override
-    public Usuario findById(Long id) {
-        return usuarioRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("No hay ningun usuario con el id: " + id)); 
-                                // Crearemos excepcion personalizada
+    public UsuarioResponseDTO findById(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                                            .orElseThrow(() -> new RuntimeException("No hay ningun usuario con el id: " + id)); 
+
+        return usuarioMapper.toDTO(usuario);
     }
 
     @Override
-    public Usuario update(Long id, Usuario usuario) {
+    public UsuarioUpdateResponseDTO update(Long id, UsuarioUpdateDTO dto) {
         Usuario oldUsuario = usuarioRepository.findById(id)
                                               .orElseThrow(() -> new RuntimeException("No hay ningun usuario con el id: " + id)); 
 
-        oldUsuario.setNombre(usuario.getNombre());
-        oldUsuario.setEmail(usuario.getEmail());
-        usuario.getPerfil().setId(id);
+        oldUsuario.setNombre(dto.nombre());
+        oldUsuario.setEmail(dto.email());
 
-        oldUsuario.setPerfil(usuario.getPerfil());
-        
-
-        return usuarioRepository.save(oldUsuario);
+        return usuarioMapper.toUpdateDTO( usuarioRepository.save(oldUsuario) );
     }
 
     @Override

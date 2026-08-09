@@ -42,7 +42,7 @@ public class PrestamoController {
 
     @PostMapping
     public ResponseEntity<RespuestaApi<Prestamo>> save(@RequestBody Prestamo prestamo) {
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
                              .body(new RespuestaApi<>(true, "Prestamo Registrado", prestamoService.save(prestamo)));
     }
     

@@ -2,13 +2,16 @@ package com.biblioteca.api.springboot_biblioteca_api.services;
 
 import java.util.List;
 
-import com.biblioteca.api.springboot_biblioteca_api.entities.Usuario;
+import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioCreateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioResponseDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateResponseDTO;
 
 public interface UsuarioService {
 
-    Usuario save(Usuario usuario);
-    List<Usuario> findAll();
-    Usuario findById(Long id);
-    Usuario update(Long id, Usuario usuario);
+    UsuarioResponseDTO save(UsuarioCreateDTO dto);
+    List<UsuarioResponseDTO> findAll();
+    UsuarioResponseDTO findById(Long id);
+    UsuarioUpdateResponseDTO update(Long id, UsuarioUpdateDTO dto);
     void deleteById(Long id);
 }

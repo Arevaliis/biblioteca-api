@@ -47,7 +47,7 @@ public class CategoriaController {
     
     @PutMapping("/{id}")
     public ResponseEntity<RespuestaApi<Categoria>> update(@PathVariable Long id, @RequestBody  Categoria categoria) {        
-        return ResponseEntity.status(HttpStatus.RESET_CONTENT)
+        return ResponseEntity.status(HttpStatus.OK)
                              .body( new RespuestaApi<>(true, "Categoria Modificada", categoriaServiceImpl.update(id, categoria)));
     }
 

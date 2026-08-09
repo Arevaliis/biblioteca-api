@@ -4,6 +4,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biblioteca.api.springboot_biblioteca_api.dto.RespuestaApi;
+import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioCreateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioResponseDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.entities.Usuario;
 import com.biblioteca.api.springboot_biblioteca_api.services.UsuarioService;
 
@@ -29,28 +33,28 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<RespuestaApi<List<Usuario>>> findAll() {
+    public ResponseEntity<RespuestaApi<List<UsuarioResponseDTO>>> findAll() {
         return ResponseEntity.ok(
                 new RespuestaApi<>(true, "Usuarios encontrados", usuarioService.findAll()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RespuestaApi<Usuario>> findById(@PathVariable Long id) {
+    public ResponseEntity<RespuestaApi<UsuarioResponseDTO>> findById(@PathVariable Long id) {
         return ResponseEntity.ok(
                 new RespuestaApi<>(true, "Usuario encontrado", usuarioService.findById(id)));
     }
     
     
     @PostMapping
-    public ResponseEntity<RespuestaApi<Usuario>> save(@RequestBody Usuario usuario) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(new RespuestaApi<>(true, "Usuario Creado", usuarioService.save(usuario)));
+    public ResponseEntity<RespuestaApi<UsuarioResponseDTO>> save(@RequestBody UsuarioCreateDTO dto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new RespuestaApi<>(true, "Usuario Creado", usuarioService.save(dto)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RespuestaApi<Usuario>> update(@PathVariable Long id, @RequestBody Usuario usuario) {        
+    public ResponseEntity<RespuestaApi<UsuarioUpdateResponseDTO>> update(@PathVariable Long id, @RequestBody UsuarioUpdateDTO dto) {        
         return ResponseEntity.status(HttpStatus.RESET_CONTENT)
-                             .body( new RespuestaApi<>(true, "Usuario Modificado", usuarioService.update(id, usuario)));
+                             .body( new RespuestaApi<>(true, "Usuario Modificado", usuarioService.update(id, dto)));
     }
 
     @DeleteMapping("/{id}")
