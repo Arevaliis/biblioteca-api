@@ -41,7 +41,10 @@ public class Usuario {
 
     @OneToOne(
         mappedBy = "usuario",
-        cascade = CascadeType.ALL,
+        cascade = {
+            CascadeType.PERSIST, 
+            CascadeType.REMOVE
+        },
         orphanRemoval = true    
     )
     @JsonManagedReference
@@ -162,7 +165,4 @@ public class Usuario {
         return "Usuario [id=" + id + ", nombre=" + nombre + ", email=" + email + ", fechaRegistro=" + fechaRegistro
                 + ", fechaActualizacion=" + fechaActualizacion + ", perfil=" + perfil + "]";
     }
-
-    
-
 }

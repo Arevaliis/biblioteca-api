@@ -8,7 +8,6 @@ import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioCreateDTO
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateResponseDTO;
-import com.biblioteca.api.springboot_biblioteca_api.entities.Usuario;
 import com.biblioteca.api.springboot_biblioteca_api.services.UsuarioService;
 
 import java.util.List;
@@ -47,13 +46,13 @@ public class UsuarioController {
     
     @PostMapping
     public ResponseEntity<RespuestaApi<UsuarioResponseDTO>> save(@RequestBody UsuarioCreateDTO dto) {
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.CREATED)
                              .body(new RespuestaApi<>(true, "Usuario Creado", usuarioService.save(dto)));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RespuestaApi<UsuarioUpdateResponseDTO>> update(@PathVariable Long id, @RequestBody UsuarioUpdateDTO dto) {        
-        return ResponseEntity.status(HttpStatus.RESET_CONTENT)
+        return ResponseEntity.status(HttpStatus.OK)
                              .body( new RespuestaApi<>(true, "Usuario Modificado", usuarioService.update(id, dto)));
     }
 

@@ -75,7 +75,7 @@ public class Perfil {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-        public Usuario getUsuario() {
+    public Usuario getUsuario() {
         return usuario;
     }
 
