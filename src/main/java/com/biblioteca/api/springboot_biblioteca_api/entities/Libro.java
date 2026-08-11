@@ -31,12 +31,15 @@ public class Libro {
     private String autor;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "libros_categorias", joinColumns = @JoinColumn(name = "libro_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
+    @JoinTable(
+        name = "libros_categorias", 
+        joinColumns = @JoinColumn(name = "libro_id"), 
+        inverseJoinColumns = @JoinColumn(name = "categoria_id")
+    )
     @JsonIdentityReference
     private List<Categoria> categorias = new ArrayList<>();
 
-    public Libro() {
-    }
+    public Libro() {}
 
     public Libro(String titulo, String autor) {
         this.titulo = titulo;
@@ -44,9 +47,7 @@ public class Libro {
     }
 
     public void addCategoria(Categoria categoria) {
-
         categorias.add(categoria);
-
     }
 
     public Long getId() {

@@ -5,8 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.biblioteca.api.springboot_biblioteca_api.entities.Categoria;
+import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroCreateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroResponseDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroUpdateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.entities.Libro;
+import com.biblioteca.api.springboot_biblioteca_api.mappers.LibroMapper;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.CategoriaRepository;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.LibroRepository;
 import com.biblioteca.api.springboot_biblioteca_api.services.LibroService;
@@ -14,53 +17,63 @@ import com.biblioteca.api.springboot_biblioteca_api.services.LibroService;
 @Service
 public class LibroServiceImpl implements LibroService {
     
-    private LibroRepository libroRepository;
-    private CategoriaRepository categoriaRepository;
+    private final LibroRepository libroRepository;
+    private final CategoriaRepository categoriaRepository;
+    private final LibroMapper libroMapper;
 
-    public LibroServiceImpl(LibroRepository libroRepository, CategoriaRepository categoriaRepository) {
+    public LibroServiceImpl(LibroRepository libroRepository, CategoriaRepository categoriaRepository, LibroMapper libroMapper) {
         this.libroRepository = libroRepository;
         this.categoriaRepository = categoriaRepository;
+        this.libroMapper = libroMapper;
     }
 
     @Override
-    public Libro save(Libro libro) {
+    public LibroResponseDTO save(LibroCreateDTO dto) {
         
-        List<Categoria> categoriasRecibidas  = libro.getCategorias();
-        List<Categoria> categorias = new ArrayList<>();
+        List<Long> categoriasRecibidas  = dto.categoriasId();
+        Libro libro = libroMapper.toEntity(dto);
 
-        categoriasRecibidas .stream()
-                            .forEach( 
-                                cat -> categorias.add(categoriaRepository.findById(cat.getId()).orElseThrow())
+        categoriasRecibidas.stream()
+                           .forEach( 
+                                idCat ->  libro.addCategoria(
+                                    categoriaRepository.findById(idCat).orElseThrow()
+                                )
                             );
 
-        libro.setCategorias(categorias);
-
-        return libroRepository.save(libro);
+        return libroMapper.toDto(libroRepository.save(libro));
 
     }
 
     @Override
-    public Libro findById(Long id) {
-        return libroRepository.findById(id).orElseThrow();
+    public LibroResponseDTO findById(Long id) {
+        return libroMapper.toDto(libroRepository.findById(id).orElseThrow());
     }
 
     @Override
-    public List<Libro> findAll() {
-        return libroRepository.findAll();
+    public List<LibroResponseDTO> findAll() {
+        return libroRepository.findAll().stream().map(libroMapper::toDto).toList();
     }
 
     @Override
-    public Libro update(Long id, Libro libro) {
+    public LibroResponseDTO update(Long id, LibroUpdateDTO dto) {
         Libro libroNuevo = libroRepository.findById(id).orElseThrow();
 
-        libro.setAutor(libro.getAutor());
-        libroNuevo.setTitulo(libro.getTitulo());
+        libroNuevo.setAutor(dto.autor());
+        libroNuevo.setTitulo(dto.titulo());
+        libroNuevo.setCategorias(new ArrayList<>());
 
-        return libroRepository.save(libro);
+        dto.categoriasId().stream()
+                           .forEach( 
+                                idCat ->  libroNuevo.addCategoria(
+                                    categoriaRepository.findById(idCat).orElseThrow()
+                                )
+                            );
+
+        return libroMapper.toDto(libroRepository.save(libroNuevo));
     }
 
     @Override
     public void deleteById(Long id) {
         libroRepository.deleteById(id);
-    }    
+    }
 }
