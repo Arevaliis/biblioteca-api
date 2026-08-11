@@ -2,12 +2,13 @@ package com.biblioteca.api.springboot_biblioteca_api.services;
 
 import java.util.List;
 
-import com.biblioteca.api.springboot_biblioteca_api.entities.Prestamo;
+import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoCreateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoResponseDTO;
 
 public interface PrestamoService {
     
-    Prestamo save(Prestamo prestamo);
-    Prestamo findById(Long id);
-    List<Prestamo> findAll();
-    Prestamo update(Long id);
+    PrestamoResponseDTO save(PrestamoCreateDTO dto);
+    PrestamoResponseDTO findById(Long id);
+    List<PrestamoResponseDTO> findAll();
+    PrestamoResponseDTO devolver(Long id);
 }

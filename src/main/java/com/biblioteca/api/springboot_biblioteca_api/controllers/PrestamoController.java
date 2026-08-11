@@ -4,7 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biblioteca.api.springboot_biblioteca_api.dto.RespuestaApi;
-import com.biblioteca.api.springboot_biblioteca_api.entities.Prestamo;
+import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoCreateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.services.PrestamoService;
 
 import java.util.List;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
 @RestController
 @RequestMapping("/prestamos")
 public class PrestamoController {
@@ -29,26 +29,26 @@ public class PrestamoController {
     }
 
     @GetMapping
-    public ResponseEntity<RespuestaApi<List<Prestamo>>> findAll() {
-        return ResponseEntity.ok(
-                new RespuestaApi<>(true, "Prestamos encontrados", prestamoService.findAll()));
+    public ResponseEntity<RespuestaApi<List<PrestamoResponseDTO>>> findAll() {
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new RespuestaApi<>(true, "Prestamos encontrados", prestamoService.findAll()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RespuestaApi<Prestamo>> findById(Long id) {
-        return ResponseEntity.ok(
-                new RespuestaApi<>(true, "Prestamo encontrado", prestamoService.findById(id)));
+    public ResponseEntity<RespuestaApi<PrestamoResponseDTO>> findById(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new RespuestaApi<>(true, "Prestamo encontrado", prestamoService.findById(id)));
     }
 
     @PostMapping
-    public ResponseEntity<RespuestaApi<Prestamo>> save(@RequestBody Prestamo prestamo) {
-        return ResponseEntity.status(HttpStatus.OK)
-                             .body(new RespuestaApi<>(true, "Prestamo Registrado", prestamoService.save(prestamo)));
+    public ResponseEntity<RespuestaApi<PrestamoResponseDTO>> save(@RequestBody PrestamoCreateDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(new RespuestaApi<>(true, "Prestamo Registrado", prestamoService.save(dto)));
     }
     
-    @PutMapping("/{id}")
-    public ResponseEntity<RespuestaApi<Prestamo>> putMethodName(@PathVariable Long id) {        
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
-                             .body(new RespuestaApi<>(true, "Prestamo Devuelto", prestamoService.update(id)));
+    @PutMapping("/{id}/devolucion")
+    public ResponseEntity<RespuestaApi<PrestamoResponseDTO>> update(@PathVariable Long id) {        
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(new RespuestaApi<>(true, "Prestamo Devuelto", prestamoService.devolver(id)));
     }
 }

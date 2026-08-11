@@ -1,43 +1,57 @@
 package com.biblioteca.api.springboot_biblioteca_api.services.impl;
 
+import com.biblioteca.api.springboot_biblioteca_api.mappers.PrestamoMapper;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoCreateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.entities.Prestamo;
+import com.biblioteca.api.springboot_biblioteca_api.entities.Usuario;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.PrestamoRepository;
+import com.biblioteca.api.springboot_biblioteca_api.repositories.UsuarioRepository;
 import com.biblioteca.api.springboot_biblioteca_api.services.PrestamoService;
 
 @Service
 public class PrestamoServiceImpl implements PrestamoService {
 
-    private PrestamoRepository prestamoRepository;
+    private final PrestamoMapper prestamoMapper;
+    private final PrestamoRepository prestamoRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public PrestamoServiceImpl(PrestamoRepository prestamoRepository) {
+    public PrestamoServiceImpl(PrestamoRepository prestamoRepository,  UsuarioRepository usuarioRepository, PrestamoMapper prestamoMapper) {
         this.prestamoRepository = prestamoRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.prestamoMapper = prestamoMapper;
     }
 
     @Override
-    public Prestamo save(Prestamo prestamo) {
+    public PrestamoResponseDTO save(PrestamoCreateDTO dto) {
+        Usuario usuario = usuarioRepository.findById(dto.usuarioId()).orElseThrow();
         
-        return prestamoRepository.save(prestamo);
+        Prestamo prestamo = new Prestamo();
+        prestamo.setUsuario(usuario);
+
+        return prestamoMapper.toDto(prestamoRepository.save(prestamo));
     }
 
     @Override
-    public Prestamo findById(Long id) {
-        return prestamoRepository.findById(id).orElseThrow(() -> new RuntimeException("Préstamo no encontrado"));
+    public PrestamoResponseDTO findById(Long id) {
+        return prestamoMapper.toDto(prestamoRepository.findById(id).orElseThrow());
     }
 
     @Override
-    public List<Prestamo> findAll() {
-        return prestamoRepository.findAll();
+    public List<PrestamoResponseDTO> findAll() {
+        return prestamoRepository.findAll().stream().map(prestamoMapper::toDto).toList();
     }
 
     @Override
-    public Prestamo update(Long id) {
-        Prestamo prestamo = prestamoRepository.findById(id).orElseThrow(() -> new RuntimeException("Préstamo no encontrado"));    
+    public PrestamoResponseDTO devolver(Long id) {
+        Prestamo prestamo = prestamoRepository.findById(id).orElseThrow(() -> new RuntimeException());    
         prestamo.setFechaDevolucion(LocalDateTime.now());    
-        return prestamoRepository.save(prestamo);
+
+        return prestamoMapper.toDto(prestamoRepository.save(prestamo));
     }
 }
