@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoResponseDTO;
@@ -28,6 +29,7 @@ public class PrestamoServiceImpl implements PrestamoService {
     }
 
     @Override
+    @Transactional
     public PrestamoResponseDTO save(PrestamoCreateDTO dto) {
         Usuario usuario = usuarioRepository.findById(dto.usuarioId()).orElseThrow();
         
@@ -38,16 +40,19 @@ public class PrestamoServiceImpl implements PrestamoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PrestamoResponseDTO findById(Long id) {
         return prestamoMapper.toDto(prestamoRepository.findById(id).orElseThrow());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PrestamoResponseDTO> findAll() {
         return prestamoRepository.findAll().stream().map(prestamoMapper::toDto).toList();
     }
 
     @Override
+    @Transactional
     public PrestamoResponseDTO devolver(Long id) {
         Prestamo prestamo = prestamoRepository.findById(id).orElseThrow(() -> new RuntimeException());    
         prestamo.setFechaDevolucion(LocalDateTime.now());    

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroResponseDTO;
@@ -28,6 +29,7 @@ public class LibroServiceImpl implements LibroService {
     }
 
     @Override
+    @Transactional
     public LibroResponseDTO save(LibroCreateDTO dto) {
         
         List<Long> categoriasRecibidas  = dto.categoriasId();
@@ -45,16 +47,19 @@ public class LibroServiceImpl implements LibroService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public LibroResponseDTO findById(Long id) {
         return libroMapper.toDto(libroRepository.findById(id).orElseThrow());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<LibroResponseDTO> findAll() {
         return libroRepository.findAll().stream().map(libroMapper::toDto).toList();
     }
 
     @Override
+    @Transactional
     public LibroResponseDTO update(Long id, LibroUpdateDTO dto) {
         Libro libroNuevo = libroRepository.findById(id).orElseThrow();
 
@@ -73,6 +78,7 @@ public class LibroServiceImpl implements LibroService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
         libroRepository.deleteById(id);
     }

@@ -3,6 +3,7 @@ package com.biblioteca.api.springboot_biblioteca_api.services.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioResponseDTO;
@@ -32,12 +33,14 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> findAll() {
         List<Usuario> usuarios = usuarioRepository.findAll();
         return usuarios.stream().map(usuarioMapper::toDTO).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UsuarioResponseDTO findById(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
                                             .orElseThrow(() -> new RuntimeException("No hay ningun usuario con el id: " + id)); 
@@ -46,6 +49,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    @Transactional
     public UsuarioUpdateResponseDTO update(Long id, UsuarioUpdateDTO dto) {
         Usuario oldUsuario = usuarioRepository.findById(id)
                                               .orElseThrow(() -> new RuntimeException("No hay ningun usuario con el id: " + id)); 

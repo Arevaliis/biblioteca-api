@@ -3,6 +3,7 @@ package com.biblioteca.api.springboot_biblioteca_api.services.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.biblioteca.api.springboot_biblioteca_api.dto.perfil.PerfilCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.perfil.PerfilResponseDTO;
@@ -27,6 +28,7 @@ public class PerfilServiceImpl implements PerfilService {
     }
 
     @Override
+    @Transactional
     public PerfilResponseDTO save(PerfilCreateDTO dto) {
         Perfil perfil = perfilMapper.toEntity(dto);
         perfil.setUsuario(usuarioRepository.findById(dto.usuarioId()).orElseThrow());
@@ -35,16 +37,19 @@ public class PerfilServiceImpl implements PerfilService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PerfilResponseDTO findById(Long id) {
         return perfilMapper.toDto(perfilRepository.findById(id).orElseThrow());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PerfilResponseDTO> findAll() {
         return perfilRepository.findAll().stream().map(perfilMapper::toDto).toList();
     }
 
     @Override
+    @Transactional
     public PerfilResponseDTO update(Long id, PerfilUpdateDTO dto) {
         Perfil perfil = perfilRepository.findById(id).orElseThrow();
 
