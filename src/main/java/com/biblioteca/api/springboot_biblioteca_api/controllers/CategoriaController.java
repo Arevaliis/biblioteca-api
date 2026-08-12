@@ -14,48 +14,51 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biblioteca.api.springboot_biblioteca_api.dto.RespuestaApi;
-import com.biblioteca.api.springboot_biblioteca_api.entities.Categoria;
+import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaCreateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaResponseDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaUpdateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.services.CategoriaService;
 import com.biblioteca.api.springboot_biblioteca_api.services.impl.CategoriaServiceImpl;
 
 @RestController
 @RequestMapping("/categorias")
 public class CategoriaController {
     
-    private CategoriaServiceImpl categoriaServiceImpl;
+    private CategoriaService categoriaServiceImpl;
 
     public CategoriaController(CategoriaServiceImpl categoriaServiceImpl) {
         this.categoriaServiceImpl = categoriaServiceImpl;
     }
 
     @PostMapping
-    public ResponseEntity<RespuestaApi<Categoria>> save(@RequestBody Categoria categoria) {        
-        return ResponseEntity.ok(
-                new RespuestaApi<>(true, "Categoria Registrada", categoriaServiceImpl.save(categoria)));
+    public ResponseEntity<RespuestaApi<CategoriaResponseDTO>> save(@RequestBody CategoriaCreateDTO dto) {        
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body( new RespuestaApi<>(true, "Categoria Registrada", categoriaServiceImpl.save(dto)));
     }
 
     @GetMapping
-    public ResponseEntity<RespuestaApi<List<Categoria>>> findAll() {
+    public ResponseEntity<RespuestaApi<List<CategoriaResponseDTO>>> findAll() {
         return ResponseEntity.ok(
                 new RespuestaApi<>(true, "Categorias encontradas", categoriaServiceImpl.findAll()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RespuestaApi<Categoria>> findById(@PathVariable Long id) {
+    public ResponseEntity<RespuestaApi<CategoriaResponseDTO>> findById(@PathVariable Long id) {
         return ResponseEntity.ok(
-                new RespuestaApi<>(true, "Categoria encontrada", categoriaServiceImpl.fingById(id)));
+                new RespuestaApi<>(true, "Categoria encontrada", categoriaServiceImpl.findById(id)));
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<RespuestaApi<Categoria>> update(@PathVariable Long id, @RequestBody  Categoria categoria) {        
+    public ResponseEntity<RespuestaApi<CategoriaResponseDTO>> update(@PathVariable Long id, @RequestBody  CategoriaUpdateDTO dto) {        
         return ResponseEntity.status(HttpStatus.OK)
-                             .body( new RespuestaApi<>(true, "Categoria Modificada", categoriaServiceImpl.update(id, categoria)));
+                             .body( new RespuestaApi<>(true, "Categoria Modificada", categoriaServiceImpl.update(id, dto)));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<RespuestaApi<String>> deleteById(@PathVariable Long id) {
         categoriaServiceImpl.deleteById(id);
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED)
+        return ResponseEntity.status(HttpStatus.OK)
                              .body( new RespuestaApi<>(true, "Categoria eliminada", "Categoria con id " + id + " ha sido eliminada con exito"));
     }
 }

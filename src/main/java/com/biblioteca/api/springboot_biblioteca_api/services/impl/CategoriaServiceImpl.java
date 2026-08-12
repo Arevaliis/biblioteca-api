@@ -5,46 +5,50 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaCreateDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaResponseDTO;
+import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaUpdateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.entities.Categoria;
+import com.biblioteca.api.springboot_biblioteca_api.mappers.CategoriaMapper;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.CategoriaRepository;
 import com.biblioteca.api.springboot_biblioteca_api.services.CategoriaService;
 
 @Service
 public class CategoriaServiceImpl implements CategoriaService {
     
-    private CategoriaRepository categoriaRepository;
+    private final CategoriaRepository categoriaRepository;
+    private final CategoriaMapper categoriaMapper;
 
-    public CategoriaServiceImpl(CategoriaRepository categoriaRepository) {
+    public CategoriaServiceImpl(CategoriaRepository categoriaRepository, CategoriaMapper categoriaMapper) {
         this.categoriaRepository = categoriaRepository;
-    }
-
-    // TODO AGREGAR LA ETIQUETA TRANSACTIONAL A LOS METODOS OJO SI NO HAY TRANSACCION REAL USAR READ ONLY
-    @Override
-    @Transactional
-    public Categoria save(Categoria categoria) {
-        return categoriaRepository.save(categoria);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Categoria> findAll() {
-        return categoriaRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Categoria fingById(Long id) {
-        return categoriaRepository.findById(id).orElseThrow();
+        this.categoriaMapper = categoriaMapper;
     }
 
     @Override
     @Transactional
-    public Categoria update(Long id, Categoria categoria) {
-        Categoria categoriaNueva = categoriaRepository.findById(id).orElseThrow();
+    public CategoriaResponseDTO save(CategoriaCreateDTO dto) {
+        return categoriaMapper.toDto(categoriaRepository.save(categoriaMapper.toEntity(dto)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CategoriaResponseDTO> findAll() {
+        return categoriaRepository.findAll().stream().map(categoriaMapper::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CategoriaResponseDTO findById(Long id) {
+        return categoriaMapper.toDto(categoriaRepository.findById(id).orElseThrow());
+    }
+
+    @Override
+    @Transactional
+    public CategoriaResponseDTO update(Long id, CategoriaUpdateDTO dto) {
+        Categoria categoriaActulizada = categoriaRepository.findById(id).orElseThrow();
+        categoriaActulizada.setNombre(dto.nombre());
         
-        categoriaNueva.setNombre(categoria.getNombre());
-        
-        return categoriaRepository.save(categoriaNueva);
+        return categoriaMapper.toDto(categoriaRepository.save(categoriaActulizada));
     }
 
     @Override
@@ -52,6 +56,4 @@ public class CategoriaServiceImpl implements CategoriaService {
     public void deleteById(Long id) {
         categoriaRepository.deleteById(id);
     };
-
-    
 }
