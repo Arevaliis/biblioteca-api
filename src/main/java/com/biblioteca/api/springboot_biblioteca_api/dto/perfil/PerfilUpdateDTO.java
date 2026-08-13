@@ -2,4 +2,23 @@ package com.biblioteca.api.springboot_biblioteca_api.dto.perfil;
 
 import java.time.LocalDate;
 
-public record PerfilUpdateDTO(String telefono, String direccion, LocalDate fechaNacimiento) { }
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
+
+public record PerfilUpdateDTO(
+    
+    @Size(max= 15)
+    @NotBlank
+    String telefono, 
+    
+    @Size(max= 150)
+    @NotBlank
+    String direccion, 
+    
+    @NotNull
+    @Past
+    LocalDate fechaNacimiento
+
+) {}

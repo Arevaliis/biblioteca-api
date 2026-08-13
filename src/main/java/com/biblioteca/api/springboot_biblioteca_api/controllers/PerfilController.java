@@ -18,6 +18,8 @@ import com.biblioteca.api.springboot_biblioteca_api.dto.perfil.PerfilResponseDTO
 import com.biblioteca.api.springboot_biblioteca_api.dto.perfil.PerfilUpdateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.services.PerfilService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/perfiles")
 public class PerfilController {
@@ -42,13 +44,13 @@ public class PerfilController {
     
     
     @PostMapping
-    public ResponseEntity<RespuestaApi<PerfilResponseDTO>> save(@RequestBody PerfilCreateDTO dto) {
+    public ResponseEntity<RespuestaApi<PerfilResponseDTO>> save(@Valid @RequestBody PerfilCreateDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(new RespuestaApi<>(true, "Perfil Creado", perfilService.save(dto)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RespuestaApi<PerfilResponseDTO>> update(@PathVariable Long id, @RequestBody PerfilUpdateDTO dto) {        
+    public ResponseEntity<RespuestaApi<PerfilResponseDTO>> update(@PathVariable Long id, @Valid @RequestBody PerfilUpdateDTO dto) {        
         return ResponseEntity.status(HttpStatus.OK)
                              .body( new RespuestaApi<>(true, "Perfil Modificado", perfilService.update(id, dto)));
     }

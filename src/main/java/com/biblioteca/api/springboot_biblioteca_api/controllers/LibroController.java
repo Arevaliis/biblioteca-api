@@ -9,6 +9,8 @@ import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroUpdateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.services.LibroService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,7 @@ public class LibroController {
     }
 
     @PostMapping
-    public ResponseEntity<RespuestaApi<LibroResponseDTO>> save(@RequestBody LibroCreateDTO dto) {        
+    public ResponseEntity<RespuestaApi<LibroResponseDTO>> save(@Valid @RequestBody LibroCreateDTO dto) {        
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(new RespuestaApi<>(true, "Libro Registrado", libroService.save(dto)));
     }
@@ -49,7 +51,7 @@ public class LibroController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RespuestaApi<LibroResponseDTO>> update(@PathVariable Long id, @RequestBody LibroUpdateDTO dto) {        
+    public ResponseEntity<RespuestaApi<LibroResponseDTO>> update(@PathVariable Long id, @Valid @RequestBody LibroUpdateDTO dto) {        
         return ResponseEntity.status(HttpStatus.OK)
                              .body(new RespuestaApi<>(true, "Libro Actualizado", libroService.update(id, dto)));
     }

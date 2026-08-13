@@ -8,6 +8,8 @@ import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoCreateD
 import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.services.PrestamoService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -41,7 +43,7 @@ public class PrestamoController {
     }
 
     @PostMapping
-    public ResponseEntity<RespuestaApi<PrestamoResponseDTO>> save(@RequestBody PrestamoCreateDTO dto) {
+    public ResponseEntity<RespuestaApi<PrestamoResponseDTO>> save(@Valid @RequestBody PrestamoCreateDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(new RespuestaApi<>(true, "Prestamo Registrado", prestamoService.save(dto)));
     }

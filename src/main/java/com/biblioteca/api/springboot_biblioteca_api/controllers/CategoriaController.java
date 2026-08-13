@@ -20,6 +20,8 @@ import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaUpdat
 import com.biblioteca.api.springboot_biblioteca_api.services.CategoriaService;
 import com.biblioteca.api.springboot_biblioteca_api.services.impl.CategoriaServiceImpl;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/categorias")
 public class CategoriaController {
@@ -31,7 +33,7 @@ public class CategoriaController {
     }
 
     @PostMapping
-    public ResponseEntity<RespuestaApi<CategoriaResponseDTO>> save(@RequestBody CategoriaCreateDTO dto) {        
+    public ResponseEntity<RespuestaApi<CategoriaResponseDTO>> save(@Valid @RequestBody CategoriaCreateDTO dto) {        
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body( new RespuestaApi<>(true, "Categoria Registrada", categoriaServiceImpl.save(dto)));
     }
@@ -49,7 +51,7 @@ public class CategoriaController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<RespuestaApi<CategoriaResponseDTO>> update(@PathVariable Long id, @RequestBody  CategoriaUpdateDTO dto) {        
+    public ResponseEntity<RespuestaApi<CategoriaResponseDTO>> update(@PathVariable Long id, @Valid @RequestBody  CategoriaUpdateDTO dto) {        
         return ResponseEntity.status(HttpStatus.OK)
                              .body( new RespuestaApi<>(true, "Categoria Modificada", categoriaServiceImpl.update(id, dto)));
     }

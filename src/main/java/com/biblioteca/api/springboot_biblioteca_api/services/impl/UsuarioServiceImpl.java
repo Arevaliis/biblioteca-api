@@ -10,6 +10,8 @@ import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioResponseD
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.entities.Usuario;
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.RecursoDuplicadoException;
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.RecursoNoEncontradoException;
 import com.biblioteca.api.springboot_biblioteca_api.mappers.UsuarioMapper;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.UsuarioRepository;
 import com.biblioteca.api.springboot_biblioteca_api.services.UsuarioService;
@@ -27,8 +29,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    @Transactional
     public UsuarioResponseDTO save(UsuarioCreateDTO dto) {
-        Usuario usuarioCreado = usuarioRepository.save(usuarioMapper.toEntity(dto));
+
+        if (usuarioRepository.existsByEmail(dto.email())) {
+            throw new RecursoDuplicadoException("El email " + dto.email() + " ya existe.");
+        }
+        
+       Usuario usuarioCreado = usuarioRepository.save(usuarioMapper.toEntity(dto));
+
         return usuarioMapper.toDTO(usuarioCreado);
     }
 
@@ -43,7 +52,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional(readOnly = true)
     public UsuarioResponseDTO findById(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
-                                            .orElseThrow(() -> new RuntimeException("No hay ningun usuario con el id: " + id)); 
+                                            .orElseThrow(() -> new RecursoNoEncontradoException("No hay ningun usuario con el id: " + id)); 
 
         return usuarioMapper.toDTO(usuario);
     }
@@ -52,7 +61,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional
     public UsuarioUpdateResponseDTO update(Long id, UsuarioUpdateDTO dto) {
         Usuario oldUsuario = usuarioRepository.findById(id)
-                                              .orElseThrow(() -> new RuntimeException("No hay ningun usuario con el id: " + id)); 
+                                              .orElseThrow(() -> new RecursoNoEncontradoException("No hay ningun usuario con el id: " + id)); 
 
         oldUsuario.setNombre(dto.nombre());
         oldUsuario.setEmail(dto.email());

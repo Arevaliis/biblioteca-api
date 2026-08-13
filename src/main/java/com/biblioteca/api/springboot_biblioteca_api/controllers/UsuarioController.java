@@ -10,6 +10,8 @@ import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateDTO
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.services.UsuarioService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -45,13 +47,13 @@ public class UsuarioController {
     
     
     @PostMapping
-    public ResponseEntity<RespuestaApi<UsuarioResponseDTO>> save(@RequestBody UsuarioCreateDTO dto) {
+    public ResponseEntity<RespuestaApi<UsuarioResponseDTO>> save(@Valid @RequestBody UsuarioCreateDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(new RespuestaApi<>(true, "Usuario Creado", usuarioService.save(dto)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RespuestaApi<UsuarioUpdateResponseDTO>> update(@PathVariable Long id, @RequestBody UsuarioUpdateDTO dto) {        
+    public ResponseEntity<RespuestaApi<UsuarioUpdateResponseDTO>> update(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateDTO dto) {        
         return ResponseEntity.status(HttpStatus.OK)
                              .body( new RespuestaApi<>(true, "Usuario Modificado", usuarioService.update(id, dto)));
     }

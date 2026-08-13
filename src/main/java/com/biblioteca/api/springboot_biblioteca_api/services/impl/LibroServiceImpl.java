@@ -32,7 +32,7 @@ public class LibroServiceImpl implements LibroService {
     @Transactional
     public LibroResponseDTO save(LibroCreateDTO dto) {
         
-        List<Long> categoriasRecibidas  = dto.categoriasId();
+        List<Long> categoriasRecibidas  = dto.categoriasIds();
         Libro libro = libroMapper.toEntity(dto);
 
         categoriasRecibidas.stream()
@@ -67,7 +67,7 @@ public class LibroServiceImpl implements LibroService {
         libroNuevo.setTitulo(dto.titulo());
         libroNuevo.setCategorias(new ArrayList<>());
 
-        dto.categoriasId().stream()
+        dto.categoriasIds().stream()
                            .forEach( 
                                 idCat ->  libroNuevo.addCategoria(
                                     categoriaRepository.findById(idCat).orElseThrow()
