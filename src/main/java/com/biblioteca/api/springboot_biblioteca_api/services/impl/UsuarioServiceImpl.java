@@ -52,7 +52,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional(readOnly = true)
     public UsuarioResponseDTO findById(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
-                                            .orElseThrow(() -> new RecursoNoEncontradoException("No hay ningun usuario con el id: " + id)); 
+                                            .orElseThrow(() -> new RecursoNoEncontradoException("No existe un usuario con el id: " + id)); 
 
         return usuarioMapper.toDTO(usuario);
     }
@@ -60,8 +60,13 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     public UsuarioUpdateResponseDTO update(Long id, UsuarioUpdateDTO dto) {
+        
         Usuario oldUsuario = usuarioRepository.findById(id)
-                                              .orElseThrow(() -> new RecursoNoEncontradoException("No hay ningun usuario con el id: " + id)); 
+                                              .orElseThrow(() -> new RecursoNoEncontradoException("No existe un usuario con el id: " + id)); 
+
+        if (usuarioRepository.existsByEmailAndIdNot(dto.email(), id)){
+            throw new RecursoDuplicadoException("El email " + dto.email() + " ya esta registrado a nombre de otro usuario.");
+        }
 
         oldUsuario.setNombre(dto.nombre());
         oldUsuario.setEmail(dto.email());
@@ -71,6 +76,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public void deleteById(Long id) {
+        usuarioRepository.findById(id)
+                         .orElseThrow(() -> new RecursoNoEncontradoException("No existe un usuario con el id: " + id)); 
+                         
         usuarioRepository.deleteById(id);
     }
 

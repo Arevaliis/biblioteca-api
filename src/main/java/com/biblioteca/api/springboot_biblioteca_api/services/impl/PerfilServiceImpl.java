@@ -9,6 +9,9 @@ import com.biblioteca.api.springboot_biblioteca_api.dto.perfil.PerfilCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.perfil.PerfilResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.perfil.PerfilUpdateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.entities.Perfil;
+import com.biblioteca.api.springboot_biblioteca_api.entities.Usuario;
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.RecursoDuplicadoException;
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.RecursoNoEncontradoException;
 import com.biblioteca.api.springboot_biblioteca_api.mappers.PerfilMapper;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.PerfilRepository;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.UsuarioRepository;
@@ -30,8 +33,18 @@ public class PerfilServiceImpl implements PerfilService {
     @Override
     @Transactional
     public PerfilResponseDTO save(PerfilCreateDTO dto) {
+
+        if( perfilRepository.existsByTelefono(dto.telefono())){
+            throw new RecursoDuplicadoException("El telefono " + dto.telefono() + " ya esta asociado a otro perfil");
+        }
+
+        Usuario usuario = usuarioRepository.findById(dto.usuarioId())
+                                                    .orElseThrow(() -> 
+                                                        new RecursoNoEncontradoException("No existe un usuario con el id: " + dto.usuarioId()
+                                                    ));
+
         Perfil perfil = perfilMapper.toEntity(dto);
-        perfil.setUsuario(usuarioRepository.findById(dto.usuarioId()).orElseThrow());
+        perfil.setUsuario(usuario);
 
         return perfilMapper.toDto(perfilRepository.save(perfil));
     }
@@ -51,7 +64,12 @@ public class PerfilServiceImpl implements PerfilService {
     @Override
     @Transactional
     public PerfilResponseDTO update(Long id, PerfilUpdateDTO dto) {
-        Perfil perfil = perfilRepository.findById(id).orElseThrow();
+
+        Perfil perfil = perfilRepository.findById(id).orElseThrow(() -> new RecursoNoEncontradoException("No existe un perfil con id: " + id));
+        
+        if (perfilRepository.existsByTelefonoAndIdNot(dto.telefono(), id)){
+            throw new RecursoDuplicadoException("El telefono " + dto.telefono() + " ya esta asociado a otro perfil");
+        }
 
         perfil.setTelefono(dto.telefono());
         perfil.setDireccion(dto.direccion());
