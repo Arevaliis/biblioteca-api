@@ -10,8 +10,8 @@ import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioResponseD
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.entities.Usuario;
-import com.biblioteca.api.springboot_biblioteca_api.exceptions.RecursoDuplicadoException;
-import com.biblioteca.api.springboot_biblioteca_api.exceptions.RecursoNoEncontradoException;
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.RecursoDuplicadoException;
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.RecursoNoEncontradoException;
 import com.biblioteca.api.springboot_biblioteca_api.mappers.UsuarioMapper;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.UsuarioRepository;
 import com.biblioteca.api.springboot_biblioteca_api.services.UsuarioService;
@@ -36,7 +36,7 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new RecursoDuplicadoException("El email " + dto.email() + " ya existe.");
         }
         
-       Usuario usuarioCreado = usuarioRepository.save(usuarioMapper.toEntity(dto));
+        Usuario usuarioCreado = usuarioRepository.save(usuarioMapper.toEntity(dto));
 
         return usuarioMapper.toDTO(usuarioCreado);
     }
@@ -45,14 +45,19 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional(readOnly = true)
     public List<UsuarioResponseDTO> findAll() {
         List<Usuario> usuarios = usuarioRepository.findAll();
-        return usuarios.stream().map(usuarioMapper::toDTO).toList();
+        
+        return usuarios.stream()
+                       .map(usuarioMapper::toDTO)
+                       .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public UsuarioResponseDTO findById(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
-                                            .orElseThrow(() -> new RecursoNoEncontradoException("No existe un usuario con el id: " + id)); 
+                                            .orElseThrow(
+                                                () -> new RecursoNoEncontradoException("No existe un usuario con el id: " + id)
+                                            ); 
 
         return usuarioMapper.toDTO(usuario);
     }
@@ -62,7 +67,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioUpdateResponseDTO update(Long id, UsuarioUpdateDTO dto) {
         
         Usuario oldUsuario = usuarioRepository.findById(id)
-                                              .orElseThrow(() -> new RecursoNoEncontradoException("No existe un usuario con el id: " + id)); 
+                                              .orElseThrow(
+                                                () -> new RecursoNoEncontradoException("No existe un usuario con el id: " + id)
+                                            ); 
 
         if (usuarioRepository.existsByEmailAndIdNot(dto.email(), id)){
             throw new RecursoDuplicadoException("El email " + dto.email() + " ya esta registrado a nombre de otro usuario.");
@@ -77,7 +84,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public void deleteById(Long id) {
         usuarioRepository.findById(id)
-                         .orElseThrow(() -> new RecursoNoEncontradoException("No existe un usuario con el id: " + id)); 
+                         .orElseThrow(
+                            () -> new RecursoNoEncontradoException("No existe un usuario con el id: " + id)
+                        ); 
                          
         usuarioRepository.deleteById(id);
     }

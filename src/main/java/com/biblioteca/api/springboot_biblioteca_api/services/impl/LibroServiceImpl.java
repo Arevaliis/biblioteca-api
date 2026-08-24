@@ -10,6 +10,7 @@ import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroUpdateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.entities.Libro;
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.RecursoNoEncontradoException;
 import com.biblioteca.api.springboot_biblioteca_api.mappers.LibroMapper;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.CategoriaRepository;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.LibroRepository;
@@ -38,7 +39,12 @@ public class LibroServiceImpl implements LibroService {
         categoriasRecibidas.stream()
                            .forEach( 
                                 idCat ->  libro.addCategoria(
-                                    categoriaRepository.findById(idCat).orElseThrow()
+                                    categoriaRepository.findById(idCat)
+                                                                  .orElseThrow(
+                                                                        () -> new RecursoNoEncontradoException(
+                                                                            "La categoria con id " + idCat + " no existe"
+                                                                        )
+                                    )
                                 )
                             );
 
@@ -49,19 +55,28 @@ public class LibroServiceImpl implements LibroService {
     @Override
     @Transactional(readOnly = true)
     public LibroResponseDTO findById(Long id) {
-        return libroMapper.toDto(libroRepository.findById(id).orElseThrow());
+        return libroMapper.toDto(libroRepository.findById(id)
+                                                       .orElseThrow(
+                                                                () -> new RecursoNoEncontradoException("El libro con id " + id + " no existe")
+        ));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<LibroResponseDTO> findAll() {
-        return libroRepository.findAll().stream().map(libroMapper::toDto).toList();
+        return libroRepository.findAll()
+                              .stream()
+                              .map(libroMapper::toDto)
+                              .toList();
     }
 
     @Override
     @Transactional
     public LibroResponseDTO update(Long id, LibroUpdateDTO dto) {
-        Libro libroNuevo = libroRepository.findById(id).orElseThrow();
+        Libro libroNuevo = libroRepository.findById(id)
+                                          .orElseThrow(
+                                                () -> new RecursoNoEncontradoException("El libro con id " + id + " no existe")
+                                            );
 
         libroNuevo.setAutor(dto.autor());
         libroNuevo.setTitulo(dto.titulo());
@@ -70,9 +85,12 @@ public class LibroServiceImpl implements LibroService {
         dto.categoriasIds().stream()
                            .forEach( 
                                 idCat ->  libroNuevo.addCategoria(
-                                    categoriaRepository.findById(idCat).orElseThrow()
-                                )
-                            );
+                                    categoriaRepository.findById(idCat)
+                                                                  .orElseThrow(
+                                                                    () -> new RecursoNoEncontradoException("La categoria con id " + idCat + " no existe")
+                                                                  )
+                                                                )
+                                );
 
         return libroMapper.toDto(libroRepository.save(libroNuevo));
     }
@@ -80,6 +98,11 @@ public class LibroServiceImpl implements LibroService {
     @Override
     @Transactional
     public void deleteById(Long id) {
+        libroRepository.findById(id)
+                        .orElseThrow(
+                            () -> new RecursoNoEncontradoException("El libro con id " + id + " no existe")
+                        );
+        
         libroRepository.deleteById(id);
     }
 }

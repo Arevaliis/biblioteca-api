@@ -9,6 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.RecursoDuplicadoException;
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.RecursoNoEncontradoException;
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.prestamo.PrestamoYaDevueltoException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     
@@ -27,7 +31,17 @@ public class GlobalExceptionHandler {
         return buildProblemDetail(
             "https://api.biblioteca.com/errors/recurso-duplicado", 
             HttpStatus.CONFLICT.value(), 
-            "Recurso Duplicado", 
+            "Recurso duplicado", 
+            ex.getMessage()
+        );
+    }
+
+    @ExceptionHandler(PrestamoYaDevueltoException.class)
+    public ResponseEntity<ProblemDetail> handlerPrestamoYaDevueltoException(PrestamoYaDevueltoException ex){
+        return buildProblemDetail(
+            "https://api.biblioteca.com/errors/prestamo-ya-devuelto", 
+            HttpStatus.CONFLICT.value(), 
+            "Prestamo ya devuelto", 
             ex.getMessage()
         );
     }

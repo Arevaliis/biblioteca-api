@@ -9,6 +9,8 @@ import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaCreat
 import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaUpdateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.entities.Categoria;
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.RecursoDuplicadoException;
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.RecursoNoEncontradoException;
 import com.biblioteca.api.springboot_biblioteca_api.mappers.CategoriaMapper;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.CategoriaRepository;
 import com.biblioteca.api.springboot_biblioteca_api.services.CategoriaService;
@@ -27,25 +29,50 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     @Transactional
     public CategoriaResponseDTO save(CategoriaCreateDTO dto) {
-        return categoriaMapper.toDto(categoriaRepository.save(categoriaMapper.toEntity(dto)));
+        
+        if (categoriaRepository.existsByNombre(dto.nombre())){
+            throw new RecursoDuplicadoException("La categoria con nombre " + dto.nombre() + " ya esta siendo usado");
+        }
+
+        return categoriaMapper.toDto(
+            categoriaRepository.save(
+                            categoriaMapper.toEntity(dto)
+                        )
+                    );
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CategoriaResponseDTO> findAll() {
-        return categoriaRepository.findAll().stream().map(categoriaMapper::toDto).toList();
+        return categoriaRepository.findAll()
+                                  .stream()
+                                  .map(categoriaMapper::toDto)
+                                  .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public CategoriaResponseDTO findById(Long id) {
-        return categoriaMapper.toDto(categoriaRepository.findById(id).orElseThrow());
+        return categoriaMapper.toDto(
+                    categoriaRepository.findById(id)
+                                        .orElseThrow(
+                                            () -> new RecursoNoEncontradoException("La categoria con id " + id + " no existe")
+                                        )
+                                    );
     }
 
     @Override
     @Transactional
     public CategoriaResponseDTO update(Long id, CategoriaUpdateDTO dto) {
-        Categoria categoriaActulizada = categoriaRepository.findById(id).orElseThrow();
+        Categoria categoriaActulizada = categoriaRepository.findById(id)
+                                                           .orElseThrow(
+                                                                () -> new RecursoNoEncontradoException("La categoria con id " + id + " no existe")
+                                                            );
+
+        if (categoriaRepository.existsByNombreAndIdNot(dto.nombre(), id)){
+            throw new RecursoDuplicadoException("La categoria con nombre " + dto.nombre() + " ya esta siendo usado");
+        }
+
         categoriaActulizada.setNombre(dto.nombre());
         
         return categoriaMapper.toDto(categoriaRepository.save(categoriaActulizada));
@@ -54,6 +81,11 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     @Transactional
     public void deleteById(Long id) {
+        categoriaRepository.findById(id)
+                           .orElseThrow(
+                                () -> new RecursoNoEncontradoException("La categoria con id " + id + " no existe")
+                            );
+
         categoriaRepository.deleteById(id);
     };
 }
