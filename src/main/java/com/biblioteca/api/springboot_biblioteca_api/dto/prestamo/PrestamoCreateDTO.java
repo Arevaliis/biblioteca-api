@@ -5,8 +5,8 @@ import jakarta.validation.constraints.Positive;
 
 public record PrestamoCreateDTO(
     
-    @NotNull
-    @Positive
+    @NotNull( message = "{prestamo.usuarioId.notnull}")
+    @Positive( message = "{prestamo.usuarioId.positive}")
     Long usuarioId
 
 ) {}

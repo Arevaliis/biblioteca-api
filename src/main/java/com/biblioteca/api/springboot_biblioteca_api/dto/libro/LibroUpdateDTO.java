@@ -9,15 +9,15 @@ import jakarta.validation.constraints.Size;
 
 public record LibroUpdateDTO(
     
-    @NotBlank
-    @Size(max = 100)
+    @NotBlank(message = "{libro.titulo.notblank}")
+    @Size(max = 100, message = "{libro.titulo.size}")
     String titulo, 
     
-    @NotBlank
-    @Size(max=50)
+    @NotBlank(message = "{libro.autor.notblank}")
+    @Size(max=50, message = "{libro.autor.size}")
     String autor, 
     
-    @NotEmpty
-    List<@Positive Long> categoriasIds
+    @NotEmpty(message = "{libro.categoriasIds.notempty}")
+    List<@Positive(message = "{libro.categoriasIds.positive}") Long> categoriasIds
 
 ) {}

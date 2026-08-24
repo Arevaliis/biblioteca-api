@@ -5,8 +5,8 @@ import jakarta.validation.constraints.Size;
 
 public record CategoriaCreateDTO(
     
-    @NotBlank
-    @Size(max = 50)
+    @NotBlank(message = "{categoria.nombre.notblank}")
+    @Size(min = 4, max = 50, message = "{categoria.nombre.size}")
     String nombre
 
 ) { }

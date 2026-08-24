@@ -6,13 +6,13 @@ import jakarta.validation.constraints.Size;
 
 public record UsuarioUpdateDTO(
     
-    @NotBlank
-    @Size(min= 3, max=20 )
+    @NotBlank( message = "{usuario.nombre.notblank}")
+    @Size(min= 3, max=20, message = "{usuario.nombre.size}")
     String nombre, 
     
-    @Email
-    @Size(max=50 )
-    @NotBlank
+    @Email( message = "{usuario.email.email}")
+    @Size(max=50, message = "{usuario.email.size}" )
+    @NotBlank( message = "{usuario.email.notblank}")
     String email
 
 ) {}
