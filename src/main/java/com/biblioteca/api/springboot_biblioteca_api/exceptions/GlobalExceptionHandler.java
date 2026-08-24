@@ -7,13 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.RecursoDuplicadoException;
 import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.RecursoNoEncontradoException;
@@ -60,6 +64,56 @@ public class GlobalExceptionHandler {
             "Error de Validacion" ,
             "Los datos enviados no son válidos", 
             ex.getBindingResult()    
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ProblemDetail> handlerMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex){
+        return buildProblemDetail(
+            "https://api.biblioteca.com/errors/tipo-parametro", 
+            HttpStatus.BAD_REQUEST.value(), 
+            "Error tipo de parametro en el path " + ex.getName(),
+            "Se ingreso el valor '" + ex.getValue() + "' en el path variable de {" + ex.getName() + "} y se requiere un " + ex.getRequiredType()   
+        );
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ProblemDetail> handlerHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex){
+        return buildProblemDetail(
+            "https://api.biblioteca.com/errors/metodo-no-soportado", 
+            HttpStatus.METHOD_NOT_ALLOWED.value(), 
+            "Metodo no soportado" ,
+            ex.getMessage() 
+        );
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ProblemDetail> handlerHttpMessageNotReadableException(HttpMessageNotReadableException ex){
+        return buildProblemDetail(
+            "https://api.biblioteca.com/errors/formato-json", 
+            HttpStatus.BAD_REQUEST.value(), 
+            "Json mal formado" ,
+            ex.getMessage()
+        );
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ProblemDetail> handlerDataIntegrityViolationException(DataIntegrityViolationException ex){
+        return buildProblemDetail(
+            "https://api.biblioteca.com/errors/integridad-datos", 
+            HttpStatus.CONFLICT.value(), 
+            "Error de integridad de datos" ,
+            "No se pudo completar la operación debido a la restricción de integridad de los datos"
+        );
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ProblemDetail> handlerException(Exception ex){
+        return buildProblemDetail(
+            "https://api.biblioteca.com/errors/error-interno", 
+            HttpStatus.INTERNAL_SERVER_ERROR.value(), 
+            "Error interno del servidor" ,
+            "Se ha producido un error interno en el servidor."
         );
     }
 
