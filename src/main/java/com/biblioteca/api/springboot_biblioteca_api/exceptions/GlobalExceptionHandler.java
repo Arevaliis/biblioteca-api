@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.PropiedadNoPermitidaException;
 import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.RecursoDuplicadoException;
 import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.RecursoNoEncontradoException;
 import com.biblioteca.api.springboot_biblioteca_api.exceptions.prestamo.PrestamoYaDevueltoException;
@@ -114,6 +116,26 @@ public class GlobalExceptionHandler {
             HttpStatus.INTERNAL_SERVER_ERROR.value(), 
             "Error interno del servidor" ,
             "Se ha producido un error interno en el servidor."
+        );
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ProblemDetail> handlerPropertyReferenceException(PropertyReferenceException ex){
+        return buildProblemDetail(
+            "https://api.biblioteca.com/errors/parametro-no-encontrado", 
+            HttpStatus.BAD_REQUEST.value(), 
+            "Error de parametro" ,
+            "No se pudo completar la operación debido a que el parametro '" + ex.getPropertyName() + "' no se encontro"
+        );
+    }
+
+    @ExceptionHandler(PropiedadNoPermitidaException.class)
+    public ResponseEntity<ProblemDetail> handlerPropiedadNoPermitidaException(PropiedadNoPermitidaException ex){
+        return buildProblemDetail(
+            "https://api.biblioteca.com/errors/propiedad-no-permitida", 
+            HttpStatus.BAD_REQUEST.value(), 
+            "Propiedad no permitida",
+            "La propiedad '" + ex.getMessage()  + "' no está permitida para ordenar"
         );
     }
 

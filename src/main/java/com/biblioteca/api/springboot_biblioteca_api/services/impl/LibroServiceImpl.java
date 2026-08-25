@@ -3,9 +3,12 @@ package com.biblioteca.api.springboot_biblioteca_api.services.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.biblioteca.api.springboot_biblioteca_api.dto.PageResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroUpdateDTO;
@@ -63,11 +66,19 @@ public class LibroServiceImpl implements LibroService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<LibroResponseDTO> findAll() {
-        return libroRepository.findAll()
-                              .stream()
-                              .map(libroMapper::toDto)
-                              .toList();
+    public PageResponseDTO<LibroResponseDTO> findAll(Pageable pageable) {
+
+        Page<Libro> libros = libroRepository.findAll(pageable);
+        Page<LibroResponseDTO> librosDTO = libros.map(libroMapper::toDto);
+
+        return new PageResponseDTO<>(
+                        librosDTO.getContent(),
+                        libros.getNumber() + 1,
+                        librosDTO.getSize(),
+                        libros.getTotalElements(),
+                        librosDTO.getTotalPages(),
+                        libros.isLast()
+        );
     }
 
     @Override
