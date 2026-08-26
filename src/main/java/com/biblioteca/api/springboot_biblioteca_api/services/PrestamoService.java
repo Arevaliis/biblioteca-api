@@ -1,7 +1,8 @@
 package com.biblioteca.api.springboot_biblioteca_api.services;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
+import com.biblioteca.api.springboot_biblioteca_api.dto.PageResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoResponseDTO;
 
@@ -9,6 +10,6 @@ public interface PrestamoService {
     
     PrestamoResponseDTO save(PrestamoCreateDTO dto);
     PrestamoResponseDTO findById(Long id);
-    List<PrestamoResponseDTO> findAll();
+    PageResponseDTO<PrestamoResponseDTO> findAll(Pageable pageable);
     PrestamoResponseDTO devolver(Long id);
 }

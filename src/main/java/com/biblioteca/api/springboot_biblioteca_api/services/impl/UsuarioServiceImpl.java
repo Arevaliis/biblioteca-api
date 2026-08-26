@@ -1,10 +1,11 @@
 package com.biblioteca.api.springboot_biblioteca_api.services.impl;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.biblioteca.api.springboot_biblioteca_api.dto.PageResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.usuario.UsuarioUpdateDTO;
@@ -20,7 +21,6 @@ import com.biblioteca.api.springboot_biblioteca_api.services.UsuarioService;
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-
     private final UsuarioMapper usuarioMapper;
 
     public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper) {
@@ -43,12 +43,18 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UsuarioResponseDTO> findAll() {
-        List<Usuario> usuarios = usuarioRepository.findAll();
-        
-        return usuarios.stream()
-                       .map(usuarioMapper::toDTO)
-                       .toList();
+    public PageResponseDTO<UsuarioResponseDTO> findAll(Pageable pageable) {
+        Page<Usuario> usuarios = usuarioRepository.findAll(pageable);    
+        Page<UsuarioResponseDTO> usuariosDTO =  usuarios.map(usuarioMapper::toDTO);
+                                                                        
+        return new PageResponseDTO<>(
+                        usuariosDTO.getContent(),
+                        usuariosDTO.getNumber() + 1,
+                        usuariosDTO.getSize(),
+                        usuariosDTO.getTotalElements(),
+                        usuariosDTO.getTotalPages(),
+                        usuariosDTO.isLast()
+        );
     }
 
     @Override

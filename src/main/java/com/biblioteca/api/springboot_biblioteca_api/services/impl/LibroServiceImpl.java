@@ -73,11 +73,11 @@ public class LibroServiceImpl implements LibroService {
 
         return new PageResponseDTO<>(
                         librosDTO.getContent(),
-                        libros.getNumber() + 1,
+                        librosDTO.getNumber() + 1,
                         librosDTO.getSize(),
-                        libros.getTotalElements(),
+                        librosDTO.getTotalElements(),
                         librosDTO.getTotalPages(),
-                        libros.isLast()
+                        librosDTO.isLast()
         );
     }
 

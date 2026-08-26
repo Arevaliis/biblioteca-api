@@ -1,10 +1,11 @@
 package com.biblioteca.api.springboot_biblioteca_api.services.impl;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.biblioteca.api.springboot_biblioteca_api.dto.PageResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.categoria.CategoriaUpdateDTO;
@@ -43,11 +44,18 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CategoriaResponseDTO> findAll() {
-        return categoriaRepository.findAll()
-                                  .stream()
-                                  .map(categoriaMapper::toDto)
-                                  .toList();
+    public PageResponseDTO<CategoriaResponseDTO> findAll(Pageable pageable) {
+        Page<Categoria> categorias = categoriaRepository.findAll(pageable);
+        Page<CategoriaResponseDTO> categoriasDTO = categorias.map(categoriaMapper::toDto);
+
+        return new PageResponseDTO<>(
+                        categoriasDTO.getContent(),
+                        categoriasDTO.getNumber() + 1,
+                        categoriasDTO.getSize(),
+                        categoriasDTO.getTotalElements(),
+                        categoriasDTO.getTotalPages(),
+                        categoriasDTO.isLast()
+        );
     }
 
     @Override

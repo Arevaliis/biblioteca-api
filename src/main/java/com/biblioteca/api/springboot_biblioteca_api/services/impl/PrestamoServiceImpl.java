@@ -2,11 +2,13 @@ package com.biblioteca.api.springboot_biblioteca_api.services.impl;
 
 import com.biblioteca.api.springboot_biblioteca_api.mappers.PrestamoMapper;
 import java.time.LocalDateTime;
-import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.biblioteca.api.springboot_biblioteca_api.dto.PageResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.prestamo.PrestamoResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.entities.Prestamo;
@@ -57,10 +59,19 @@ public class PrestamoServiceImpl implements PrestamoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PrestamoResponseDTO> findAll() {
-        return prestamoRepository.findAll()
-                                 .stream().map(prestamoMapper::toDto)
-                                 .toList();
+    public PageResponseDTO<PrestamoResponseDTO> findAll(Pageable pageable) {
+
+        Page<Prestamo> prestamos = prestamoRepository.findAll(pageable);
+        Page<PrestamoResponseDTO> prestamosDTO = prestamos.map(prestamoMapper::toDto);
+
+        return new PageResponseDTO<>(
+                        prestamosDTO.getContent(),
+                        prestamosDTO.getNumber() + 1,
+                        prestamosDTO.getSize(),
+                        prestamosDTO.getTotalElements(),
+                        prestamosDTO.getTotalPages(),
+                        prestamosDTO.isLast()
+        );
     }
 
     @Override

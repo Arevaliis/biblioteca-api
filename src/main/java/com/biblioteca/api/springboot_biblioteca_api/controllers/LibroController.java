@@ -8,17 +8,14 @@ import com.biblioteca.api.springboot_biblioteca_api.dto.RespuestaApi;
 import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.libro.LibroUpdateDTO;
-import com.biblioteca.api.springboot_biblioteca_api.exceptions.common.PropiedadNoPermitidaException;
 import com.biblioteca.api.springboot_biblioteca_api.services.LibroService;
+import com.biblioteca.api.springboot_biblioteca_api.validation.PageableSortValidator;
 
 import jakarta.validation.Valid;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -35,9 +32,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class LibroController {
 
     private final LibroService libroService;
+    private final PageableSortValidator pageableSortValidator;
 
-    public LibroController(LibroService libroService) {
+    public LibroController(LibroService libroService, PageableSortValidator pageableSortValidator) {
         this.libroService = libroService;
+        this.pageableSortValidator = pageableSortValidator;
     }
 
     @PostMapping
@@ -48,18 +47,11 @@ public class LibroController {
 
     @GetMapping
     public ResponseEntity<RespuestaApi<PageResponseDTO<LibroResponseDTO>>> findAll(
-            @PageableDefault(page = 0, size = 8, sort = "id", direction = Direction.ASC) Pageable pageable) {
+            @PageableDefault(page = 0, size = 5, sort = "id", direction = Direction.ASC) Pageable pageable
+        ) {
 
-        List<String> listaBlanca = List.of("id", "autor");
-
-        Optional<String> propiedadNoPermitida = pageable.getSort().stream()
-                                                                    .map(Sort.Order::getProperty)
-                                                                    .filter(p -> !listaBlanca.contains(p))
-                                                                    .findFirst();
-
-        if (propiedadNoPermitida.isPresent()) {
-            throw new PropiedadNoPermitidaException(propiedadNoPermitida.get());
-        }
+        List<String> listaBlanca = List.of("id", "autor", "titulo");
+        pageableSortValidator.validateSort(listaBlanca, pageable);
 
         PageResponseDTO<LibroResponseDTO> libros = libroService.findAll(pageable);
 

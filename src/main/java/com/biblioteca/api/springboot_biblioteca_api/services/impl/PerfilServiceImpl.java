@@ -1,10 +1,11 @@
 package com.biblioteca.api.springboot_biblioteca_api.services.impl;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.biblioteca.api.springboot_biblioteca_api.dto.PageResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.perfil.PerfilCreateDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.perfil.PerfilResponseDTO;
 import com.biblioteca.api.springboot_biblioteca_api.dto.perfil.PerfilUpdateDTO;
@@ -63,11 +64,19 @@ public class PerfilServiceImpl implements PerfilService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PerfilResponseDTO> findAll() {
-        return perfilRepository.findAll()
-                               .stream()
-                               .map(perfilMapper::toDto)
-                               .toList();
+    public PageResponseDTO<PerfilResponseDTO> findAll(Pageable pageable) {
+
+        Page<Perfil> perfiles = perfilRepository.findAll(pageable);
+        Page<PerfilResponseDTO> perfilesDTO = perfiles.map(perfilMapper::toDto);
+
+        return new PageResponseDTO<>(
+                        perfilesDTO.getContent(),
+                        perfilesDTO.getNumber() + 1,
+                        perfilesDTO.getSize(),
+                        perfilesDTO.getTotalElements(),
+                        perfilesDTO.getTotalPages(),
+                        perfilesDTO.isLast()
+        );
     }
 
     @Override
