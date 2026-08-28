@@ -2,6 +2,8 @@ package com.biblioteca.api.springboot_biblioteca_api.dto.usuario;
 
 import java.time.LocalDateTime;
 
+import com.biblioteca.api.springboot_biblioteca_api.entities.Rol;
+
 public record UsuarioUpdateResponseDTO(
     
     Long id, 
@@ -12,5 +14,7 @@ public record UsuarioUpdateResponseDTO(
     
     LocalDateTime fechaRegistro, 
     
-    LocalDateTime fechaActualizacion
+    LocalDateTime fechaActualizacion, 
+
+    Rol rol
 ) {}

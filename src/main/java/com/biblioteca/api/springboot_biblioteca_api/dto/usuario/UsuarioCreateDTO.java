@@ -13,6 +13,10 @@ public record UsuarioCreateDTO(
     @Email( message = "{usuario.email.email}")
     @Size(max=50, message = "{usuario.email.size}" )
     @NotBlank( message = "{usuario.email.notblank}")
-    String email
+    String email,
+
+    @NotBlank( message = "{usuario.password.notblank}")
+    @Size(min= 8, max=24, message = "{usuario.password.size}")
+    String password
 
 ) {}

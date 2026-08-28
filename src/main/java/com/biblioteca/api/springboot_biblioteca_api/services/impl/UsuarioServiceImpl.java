@@ -2,6 +2,7 @@ package com.biblioteca.api.springboot_biblioteca_api.services.impl;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +23,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final UsuarioMapper usuarioMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper,
+            PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -36,9 +40,10 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new RecursoDuplicadoException("El email " + dto.email() + " ya existe.");
         }
         
-        Usuario usuarioCreado = usuarioRepository.save(usuarioMapper.toEntity(dto));
+        Usuario usuarioCreado = usuarioMapper.toEntity(dto);
+        usuarioCreado.setPassword(passwordEncoder.encode(dto.password()));
 
-        return usuarioMapper.toDTO(usuarioCreado);
+        return usuarioMapper.toDTO(usuarioRepository.save(usuarioCreado));
     }
 
     @Override

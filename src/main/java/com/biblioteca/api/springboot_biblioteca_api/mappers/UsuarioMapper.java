@@ -11,14 +11,14 @@ import com.biblioteca.api.springboot_biblioteca_api.entities.Usuario;
 public class UsuarioMapper {
     
     public Usuario toEntity(UsuarioCreateDTO dto){
-        return new Usuario( dto.nombre(), dto.email());
+        return new Usuario( dto.nombre(), dto.email(), dto.password());
     }
 
     public UsuarioResponseDTO toDTO(Usuario usuario){
-        return new UsuarioResponseDTO(usuario.getId(),usuario.getNombre(), usuario.getEmail(), usuario.getFechaRegistro());
+        return new UsuarioResponseDTO(usuario.getId(),usuario.getNombre(), usuario.getEmail(), usuario.getFechaRegistro(), usuario.getRol());
     }
 
     public UsuarioUpdateResponseDTO toUpdateDTO(Usuario usuario){
-        return new UsuarioUpdateResponseDTO(usuario.getId(),usuario.getNombre(), usuario.getEmail(), usuario.getFechaRegistro(), usuario.getFechaActualizacion());
+        return new UsuarioUpdateResponseDTO(usuario.getId(),usuario.getNombre(), usuario.getEmail(), usuario.getFechaRegistro(), usuario.getFechaActualizacion(), usuario.getRol());
     }
 }

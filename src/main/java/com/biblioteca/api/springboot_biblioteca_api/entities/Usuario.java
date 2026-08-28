@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
@@ -39,6 +41,12 @@ public class Usuario {
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
 
+    @Column(nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Rol rol = Rol.USUARIO;
+
     @OneToOne(
         mappedBy = "usuario",
         cascade = {
@@ -58,9 +66,10 @@ public class Usuario {
 
     public Usuario() {}
 
-    public Usuario(String nombre, String email) {
+    public Usuario(String nombre, String email, String password) {
         this.nombre = nombre;
         this.email = email;
+        this.password = password;
     }
 
     @PrePersist
@@ -123,6 +132,22 @@ public class Usuario {
 
     public void setPrestamos(List<Prestamo> prestamos) {
         this.prestamos = prestamos;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
     }
 
     public void addPrestamo(Prestamo prestamo){ 

@@ -2,26 +2,26 @@
 -- USUARIOS
 -- =========================================================
 
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Jose', 'jose@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Maria', 'maria@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Carlos', 'carlos@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Ana', 'ana@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Luis', 'luis@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Laura', 'laura@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Pedro', 'pedro@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Lucia', 'lucia@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Miguel', 'miguel@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Sofia', 'sofia@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Daniel', 'daniel@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Elena', 'elena@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Javier', 'javier@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Marta', 'marta@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Pablo', 'pablo@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Raquel', 'raquel@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Alberto', 'alberto@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Nerea', 'nerea@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Sergio', 'sergio@ual.com', NOW());
-INSERT INTO usuarios (nombre, email, fecha_registro) VALUES ('Cristina', 'cristina@ual.com', NOW());
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Jose', 'jose@ual.com', NOW(), 'ADMIN', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Maria', 'maria@ual.com', NOW(), 'ADMIN', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Carlos', 'carlos@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Ana', 'ana@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Luis', 'luis@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Laura', 'laura@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Pedro', 'pedro@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Lucia', 'lucia@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Miguel', 'miguel@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Sofia', 'sofia@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Daniel', 'daniel@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Elena', 'elena@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Javier', 'javier@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Marta', 'marta@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Pablo', 'pablo@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Raquel', 'raquel@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Alberto', 'alberto@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Nerea', 'nerea@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO 123456789 (nombre, email, fecha_registro, rol, password) VALUES ('Sergio', 'sergio@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Cristina', 'cristina@ual.com', NOW(), 'USUARIO', '123456789');
 
 -- =========================================================
 -- PERFILES

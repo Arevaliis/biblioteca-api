@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,29 +35,15 @@ public class Libro {
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
-        name = "libros_categorias",
-
-        joinColumns = @JoinColumn(
-            name = "libro_id",
-            foreignKey = @ForeignKey(
-                foreignKeyDefinition =
-                    "FOREIGN KEY (libro_id) REFERENCES libros(id) ON DELETE CASCADE"
-            )
-        ),
-        
-        inverseJoinColumns = @JoinColumn(
-            name = "categoria_id",
-            foreignKey = @ForeignKey(
-                foreignKeyDefinition =
-                    "FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE CASCADE"
-            )
-        )
+        name = "libros_categorias", 
+        joinColumns = @JoinColumn(name = "libro_id"), 
+        inverseJoinColumns = @JoinColumn(name = "categoria_id")
     )
     @JsonIdentityReference
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Categoria> categorias = new ArrayList<>();
 
-    public Libro() {}
+    public Libro() { }
 
     public Libro(String titulo, String autor) {
         this.titulo = titulo;
