@@ -1,10 +1,7 @@
-package com.biblioteca.api.springboot_biblioteca_api.security;
+package com.biblioteca.api.springboot_biblioteca_api.security.exception;
 
 import java.io.IOException;
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,10 +17,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint{
+public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
-
+    
     public AuthenticationEntryPointImpl(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
@@ -37,9 +34,8 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint{
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
 
         problemDetail.setType(URI.create("https://api.biblioteca.com/errors/authentication"));
-        problemDetail.setTitle("Autenticación requerida");
+        problemDetail.setTitle("Autenticacion requerida");
         problemDetail.setDetail("Es necesario autenticarse para acceder a este recurso");
-        problemDetail.setProperty("date", LocalDateTime.now());
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);

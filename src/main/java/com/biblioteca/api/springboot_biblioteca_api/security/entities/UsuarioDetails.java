@@ -1,4 +1,4 @@
-package com.biblioteca.api.springboot_biblioteca_api.security;
+package com.biblioteca.api.springboot_biblioteca_api.security.entities;
 
 import java.util.ArrayList;
 import java.util.Collection;

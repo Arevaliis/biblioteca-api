@@ -1,4 +1,4 @@
-package com.biblioteca.api.springboot_biblioteca_api.security;
+package com.biblioteca.api.springboot_biblioteca_api.security.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.biblioteca.api.springboot_biblioteca_api.entities.Usuario;
 import com.biblioteca.api.springboot_biblioteca_api.repositories.UsuarioRepository;
+import com.biblioteca.api.springboot_biblioteca_api.security.entities.UsuarioDetails;
 
 @Service
 public class UsuarioDetailsService implements UserDetailsService {

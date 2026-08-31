@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -136,6 +137,16 @@ public class GlobalExceptionHandler {
             HttpStatus.BAD_REQUEST.value(), 
             "Propiedad no permitida",
             "La propiedad '" + ex.getMessage()  + "' no está permitida para ordenar"
+        );
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ProblemDetail> handlerBadCredentialsException(BadCredentialsException ex){
+        return buildProblemDetail(
+            "https://api.biblioteca.com/errors/credenciales", 
+            HttpStatus.UNAUTHORIZED.value(), 
+            "Error de login",
+            "El usuario o la contraseña no son correctos"
         );
     }
 

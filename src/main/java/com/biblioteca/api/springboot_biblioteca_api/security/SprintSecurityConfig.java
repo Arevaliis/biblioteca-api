@@ -13,8 +13,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.biblioteca.api.springboot_biblioteca_api.security.exception.AuthenticationEntryPointImpl;
+import com.biblioteca.api.springboot_biblioteca_api.security.exception.CustomAccessDeniedHandlerImpl;
+
+
 @Configuration
 public class SprintSecurityConfig {
+
+    private final CustomAccessDeniedHandlerImpl customAccessDeniedHandlerImpl;
+    private final AuthenticationEntryPointImpl authenticationEntryPointImpl;
+
+    public SprintSecurityConfig(AuthenticationEntryPointImpl authenticationEntryPointImpl, CustomAccessDeniedHandlerImpl customAccessDeniedHandlerImpl) {
+        this.authenticationEntryPointImpl = authenticationEntryPointImpl;
+        this.customAccessDeniedHandlerImpl = customAccessDeniedHandlerImpl;
+    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -57,6 +69,11 @@ public class SprintSecurityConfig {
 
                         // Demas peticiones
                         .anyRequest().authenticated())
+                        
+                        .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPointImpl))
+                        .exceptionHandling(ex -> ex.accessDeniedHandler(customAccessDeniedHandlerImpl))
+                        
+                        
 
                 // .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .csrf(config -> config.disable())

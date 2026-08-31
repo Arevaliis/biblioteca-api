@@ -20,7 +20,7 @@ INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Pab
 INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Raquel', 'raquel@ual.com', NOW(), 'USUARIO', '123456789');
 INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Alberto', 'alberto@ual.com', NOW(), 'USUARIO', '123456789');
 INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Nerea', 'nerea@ual.com', NOW(), 'USUARIO', '123456789');
-INSERT INTO 123456789 (nombre, email, fecha_registro, rol, password) VALUES ('Sergio', 'sergio@ual.com', NOW(), 'USUARIO', '123456789');
+INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Sergio', 'sergio@ual.com', NOW(), 'USUARIO', '123456789');
 INSERT INTO usuarios (nombre, email, fecha_registro, rol, password) VALUES ('Cristina', 'cristina@ual.com', NOW(), 'USUARIO', '123456789');
 
 -- =========================================================
