@@ -12,9 +12,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.biblioteca.api.springboot_biblioteca_api.security.exception.AuthenticationEntryPointImpl;
 import com.biblioteca.api.springboot_biblioteca_api.security.exception.CustomAccessDeniedHandlerImpl;
+import com.biblioteca.api.springboot_biblioteca_api.security.filter.JwtAuthenticationFilter;
 
 
 @Configuration
@@ -22,10 +24,16 @@ public class SprintSecurityConfig {
 
     private final CustomAccessDeniedHandlerImpl customAccessDeniedHandlerImpl;
     private final AuthenticationEntryPointImpl authenticationEntryPointImpl;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SprintSecurityConfig(AuthenticationEntryPointImpl authenticationEntryPointImpl, CustomAccessDeniedHandlerImpl customAccessDeniedHandlerImpl) {
+    public SprintSecurityConfig(
+        AuthenticationEntryPointImpl authenticationEntryPointImpl, 
+        CustomAccessDeniedHandlerImpl customAccessDeniedHandlerImpl,
+        JwtAuthenticationFilter jwtAuthenticationFilter
+    ) {
         this.authenticationEntryPointImpl = authenticationEntryPointImpl;
         this.customAccessDeniedHandlerImpl = customAccessDeniedHandlerImpl;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
@@ -70,12 +78,13 @@ public class SprintSecurityConfig {
                         // Demas peticiones
                         .anyRequest().authenticated())
                         
-                        .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPointImpl))
-                        .exceptionHandling(ex -> ex.accessDeniedHandler(customAccessDeniedHandlerImpl))
-                        
-                        
+                        // Captura las excepciones de Sprint Security
+                        .exceptionHandling(ex -> 
+                            ex.authenticationEntryPoint(authenticationEntryPointImpl)
+                            .accessDeniedHandler(customAccessDeniedHandlerImpl)
+                        )                      
 
-                // .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();

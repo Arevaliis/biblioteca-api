@@ -34,7 +34,6 @@ public class CustomAccessDeniedHandlerImpl implements AccessDeniedHandler  {
         HttpStatus status = HttpStatus.FORBIDDEN;
 
         ProblemDetail problemDetail = ProblemDetail.forStatus(status);
-        
         problemDetail.setInstance(URI.create("https://api.biblioteca.com/errors/permisos"));
         problemDetail.setDetail("No tiene los permisos necesarios para acceder a este recurso");
         problemDetail.setTitle("Acceso denegado");

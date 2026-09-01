@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biblioteca.api.springboot_biblioteca_api.dto.login.LoginRequestDTO;
+import com.biblioteca.api.springboot_biblioteca_api.security.service.JwtService;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,21 +18,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class LoginController {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
-    public LoginController(AuthenticationManager authenticationManager) {
+    public LoginController(AuthenticationManager authenticationManager, JwtService jwtService) {
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     @PostMapping
-    public Authentication loginUsuario(@RequestBody LoginRequestDTO dto) {
+    public String loginUsuario(@RequestBody LoginRequestDTO dto) {
         String email = dto.email();
         String password = dto.password();
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password);
-                                                                                
-        Authentication authentication =  authenticationManager.authenticate(token);
+        Authentication authentication = authenticationManager.authenticate(token);
 
-        return authentication;
+        return jwtService.generarJwt(authentication);
     }
-
 }
