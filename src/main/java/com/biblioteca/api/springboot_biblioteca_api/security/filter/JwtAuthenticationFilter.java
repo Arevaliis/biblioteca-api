@@ -40,10 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         // Obtiene la cabecera Authorization
         String header = request.getHeader(HEADER_AUTHORIZATION);
 
-        // Si no hay token, continúa la petición
+        // Si no hay token, continúa la petición. Sirve para endpoint publicos
         if (header == null || !header.startsWith(PREFIX_TOKEN)) {
-
-            // Pasa la petición al siguiente filtro
             filterChain.doFilter(request, response);
             return;
         }
@@ -51,23 +49,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         // Extrae el JWT eliminando el prefijo "Bearer "
         String jwt = header.substring(PREFIX_TOKEN.length());
 
-        // Comprueba que el JWT tenga una estructura válida
-        if (!jwtService.validarJwt(jwt)) {
-
-            // Continúa sin autenticar al usuario
+        // Comprueba que el JWT tenga una estructura válida o si el token ha caducado
+        if (!jwtService.validarJwt(jwt) || jwtService.isTokenExpired(jwt)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Comprueba si el token ha caducado
-        if (jwtService.isTokenExpired(jwt)) {
-
-            // Continúa sin autenticar al usuario
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // Extrae el nombre de usuario del JWT
         String username = jwtService.extraerUsername(jwt);
 
         // Convierte los roles en autoridades de Spring Security

@@ -21,12 +21,12 @@ public class JwtService {
                                                     .orElseThrow();
 
         return Jwts.builder()
-                .subject(authentication.getName())
-                .signWith(SECRET_KEY)
-                .claim("rol", rol)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 3600000))
-                .compact();
+                    .subject(authentication.getName())
+                    .signWith(SECRET_KEY)
+                    .claim("rol", rol)
+                    .issuedAt(new Date())
+                    .expiration(new Date(System.currentTimeMillis() + 3600000))
+                    .compact();
     }
 
     public boolean validarJwt(String jwt) {
@@ -34,7 +34,7 @@ public class JwtService {
             Jwts.parser()
                 .verifyWith(SECRET_KEY)
                 .build()
-                .parseSignedClaims(jwt);
+                .parseSignedClaims(jwt); // Si no lanza ninguna excepcion significa que el token es valido
             return true;
 
         }catch (Exception e){ return false; }

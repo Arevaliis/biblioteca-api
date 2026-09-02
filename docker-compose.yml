@@ -1,0 +1,61 @@
+services:
+
+  # Servicio que ejecuta el contenedor de MySQL
+  mysql:
+    # Imagen oficial de MySQL, versión 8.4
+    image: mysql:8.4
+
+    environment:
+      # Contraseña del usuario root de MySQL
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+      # Base de datos que MySQL creará automáticamente
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+
+    # Volumen para mantener los datos de MySQL
+    volumes:
+      - mysql-data:/var/lib/mysql
+    
+    # Comprueba periódicamente si MySQL está preparado para aceptar conexiones
+    healthcheck:
+      # Ejecuta una consulta sencilla para comprobar que MySQL responde correctamente
+      test: ["CMD-SHELL", "mysql -u root -p$$MYSQL_ROOT_PASSWORD -e 'SELECT 1'"]
+
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  # Servicio que ejecuta nuestra API Spring Boot
+  biblioteca-api:
+    # Construye la imagen utilizando el Dockerfile que se encuentra en el directorio actual
+    build: .
+
+    environment:
+      # URL de conexión a MySQL "mysql" es el nombre del servicio de MySQL
+      # dentro de la red de Docker Compose
+      DB_URL: ${DB_URL}
+
+      # Usuario utilizado para conectarse a MySQL
+      DB_USERNAME: ${DB_USERNAME}
+
+      # Contraseña del usuario de MySQL
+      DB_PASSWORD: ${DB_PASSWORD}
+
+    # Mapea el puerto 8081 del ordenador con el puerto 8080 del contenedor
+    ports:
+      - "8081:8080"
+
+    # La API depende del servicio MySQL
+    depends_on:
+      mysql:
+        # La API no se iniciará hasta que MySQL haya superado correctamente el healthcheck
+        condition: service_healthy
+
+        # Permite reiniciar la API si el servicio MySQL se reinicia
+        restart: true
+
+# Definición de los volúmenes utilizados por Docker Compose
+volumes:
+  # Volumen donde Docker almacenará los datos de MySQL
+  mysql-data:
